@@ -25,7 +25,10 @@ Read the [Twitter rules about automation](https://support.twitter.com/articles/7
 
 ### 2nd step: permission
 
-Assign to your app the permission (permission who is gonna to ask to the user) in "Read/Write".
+Assign to your app the permission (permission who is gonna to ask to the user) in "Read/Write", like here, (my app is called mic-check, your need to have a differet name because these name are unique):
+
+![permission-twitterapp](https://cloud.githubusercontent.com/assets/89555/4451022/aa3eced8-482d-11e4-8ab1-cf059756cff1.png)
+
 
 ### 3rd step: keys
 
