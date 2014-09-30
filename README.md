@@ -36,4 +36,39 @@ Go in keys, click in "Your Access Token" button to create your own access token.
 
 Now, you've to copy this keys in the script files.
 
+The script takes this options:
+
+    $ ./adminutils.py init | generate | complete <initiative_NAME>
+        init: initialize an application name
+        generate: generate a registration link
+        complete: +need the PIN as argument + Token from the URL
+
+We've to initialize our app environment with **adminutils** of mic-CHECK:
+
+    $ ./adminutils.py init initiative_name
+
+This will asks for the keys present in the twitter page. the "Developer token" is used to identify the master account right now.
+
+## Loop
+
+Now your app/initiative is ready, the next two operation need to be made for each supported
+
+### URL generation
+
+    $ ./adminutils.py generate mic-check
+    https://api.twitter.com/oauth/authorize?oauth_token=PepFuJsbtKq6MwnEzlnk0YcJT4mMrijM
+    1414
+
+every time is called 'adminutils generate app_name' it return two lines:
+
+  * the first contain the URL the supporter has to authenticated (and get the PIN)
+  * the second, is a random identifier internally associated with the URL
+
+### Complete registration
+
+    $ ./adminutils.py complete mic-check 5150781 1414
+    sniffjoke
+
+Calling the adminutils with the PIN receiver by the user (5150781) and the associated random ID, cause the app to successful complete the registration (and print out the username)
+
 

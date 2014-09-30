@@ -19,34 +19,42 @@ DEFAULTDIR=".miccheck"
 class Disku:
 
 
-    def interactive_creation(self, iname):
+    def interactive_creation(self):
 
         try:
             os.makedirs(self.init_dir)
         except OSError:
             pass
 
-        if not os.access(self.ownerfname, os.W_OK):
-            raise OSError("Can't access in write: %s" % self.ownerfname)
 
-        print "Copy/Paste the Consumer Key (API Key): ",
+        print "Copy/Paste the Consumer Key (API Key): "
         consumer_key = sys.stdin.readline()[:-1]
-        print "Copy/Paste the Consumer Secret (API Secret): ",
+        print "Copy/Paste the Consumer Secret (API Secret): "
         consumer_secret = sys.stdin.readline()[:-1]
-        print "Copy/Paste the app name: ",
+        print "Copy/Paste the app name: "
         app_name = sys.stdin.readline()[:-1]
-        print "Copy/Paste the developer "
+        print "Copy/Paste the Access Token (of the developer): "
+        developer_access_token = sys.stdin.readline()[:-1]
+        print "Copy/Paste the (developer) Secret Token: "
+        developer_secret_token = sys.stdin.readline()[:-1]
+        print "Developer username: "
+        developer_username = sys.stdin.readline()[:-1]
 
+        # name redundancy with 'class twitt' -- that's bad.
+        self.apptokens = {
+            'developer_secret_token' : developer_secret_token,
+            'app_name' : app_name,
+            'consumer_secret' : consumer_secret,
+            'consumer_key' : consumer_key,
+            'developer_access_token' : developer_access_token,
+            'developer_username' : developer_username
+        }
 
+        with file(self.ownerfname ,'w+') as fp:
+            json.dump(self.apptokens, fp)
 
-        self.apptokens = json.load(file(self.ownerfname, 'r'))
+        print "Registered info in", self.ownerfname
 
-        for x in ['developer_secret_token', 'app_name', 'consumer_secret',
-                  'consumer_key', 'developer_access_token', 'developer_username']:
-            if not self.apptokens.has_key(x):
-                em = "in owner_static is missing key %s" % x
-                print em
-                raise Exception(em)
 
     def __init__(self, initiative_name):
 
@@ -55,13 +63,43 @@ class Disku:
         self.init_dir = os.path.join(self.micdir, initiative_name)
         self.ownerfname = os.path.join(self.init_dir, 'owner_static')
 
-        if os.path.isdir(self.init_dir):
-            print "Loaded initiative", initiative_name, "from", self.init_dir
-        else:
+        if not os.path.isfile(self.ownerfname):
             print "Creating initiative", initiative_name
-            self.interactive_creation(initiative_name)
+            self.interactive_creation()
 
-        self.log_file = os.path.join(self.init_dir, 'cache_info.log')
+        self.log_file = os.path.join(self.init_dir, 'activities.log')
+
+    def append_temporary(self, id, url):
+        """
+        Warning: this functionality can fill the disk and/or stale app if
+        file grow bigger than ever during a DoS/Large massive usage.
+        :return:
+        """
+        self.tmptokenf = os.path.join(self.init_dir, 'tmptoken.json')
+        tmptokenlist = {}
+        if os.path.isfile(self.tmptokenf):
+            with file(self.tmptokenf) as f:
+                tmptokenlist = json.load(f)
+
+        tmptokenlist.update({id : url})
+        with file(self.tmptokenf, 'w+') as f:
+            json.dump(tmptokenlist, f)
+
+    def pop_temporary(self, id):
+
+        self.tmptokenf = os.path.join(self.init_dir, 'tmptoken.json')
+        tmptokenlist = {}
+        if os.path.isfile(self.tmptokenf):
+            with file(self.tmptokenf) as f:
+                tmptokenlist = json.load(f)
+
+        retval_url = tmptokenlist[id]
+        del tmptokenlist[id]
+
+        with file(self.tmptokenf, 'w+') as f:
+            json.dump(tmptokenlist, f)
+
+        return retval_url
 
 
     def setup_environment_files(self):
@@ -69,7 +107,7 @@ class Disku:
         self.micdir = os.path.join(homedir, DEFAULTDIR)
 
     def log(self, a_string):
-        x= file(self.log_file, 'w+')
+        x= file(self.log_file, 'a+')
         x.write(str(a_string))
         x.close()
 
@@ -242,12 +280,17 @@ class twitt(object):
         return url, request_token['oauth_token'], request_token['oauth_token_secret']
 
     def store_oauth_tmp_token(self, oauth_token, oauth_secret, hexname):
-
+        """
+        used only for legagy - no more used really
+        """
         tokenfname = os.path.join(self.diskconf.micdir, "token_%s" % hexname)
         tokens = { 'oauth_token': oauth_token , 'oauth_secret': oauth_secret }
         json.dump(tokens, file(tokenfname, 'w+'))
 
     def get_oauth_tmp_token(self, hexname):
+        """
+        No more used - like the function before - is only filling the disk
+        """
 
         try:
             tokenfname = os.path.join(self.diskconf.micdir,
