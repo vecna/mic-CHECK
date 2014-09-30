@@ -111,11 +111,12 @@ class Disku:
         x.write(str(a_string))
         x.close()
 
-    def get_botlist(self, appname):
+    def get_botlist(self):
 
-        dirname, ownerfname = self.validate_appdir()
+        self.validate_appdir()
 
-        stuff = os.listdir(dirname)
+        stuff = os.listdir(self.micdir)
+        # TODO need to be init_dir
 
         botlist = []
         for single_f in stuff:
@@ -126,13 +127,12 @@ class Disku:
 
     def validate_appdir(self):
 
-        tmp_dirname = "%s_name" % self.micdir
-        tmp_ownerfname = '%s/owner_static' % tmp_dirname
-
-        if not os.path.isfile(tmp_ownerfname):
-            em = "do not exists %s" % tmp_ownerfname
+        if not os.path.isfile(self.ownerfname):
+            em = "do not exists %s" % self.ownerfname
             print em
             raise Exception(em)
+
+        return self.init_dir
 
 
 class twitt(object):
