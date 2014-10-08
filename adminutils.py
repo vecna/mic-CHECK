@@ -15,11 +15,20 @@ def do_init(initiative_name):
 
     print "Initializing: %s" % initiative_name
     # this at least go interactive and return a message/error
-    base.Disku(initiative_name)
+    base.Disku(initiative_name, create=True)
 
     return 0
 
 def do_generate(iname):
+
+    url, random_name = inner_do_generate(iname)
+    print "url:", url
+    print "random associated ID:", random_name
+    return 0
+
+def inner_do_generate(iname):
+
+    return "dummy_url", "dummy_random"
 
     twiface = base.twitt(iname)
 
@@ -37,9 +46,7 @@ def do_generate(iname):
 
     twiface.diskconf.append_temporary(random_name, tokens)
     twiface.diskconf.log("Appended token in %s" % twiface.diskconf.tmptokenf)
-    print url
-    print random_name
-    return 0
+    return url, random_name
 
 def do_complete(iname, pin, urltoken):
 
@@ -58,7 +65,10 @@ def do_complete(iname, pin, urltoken):
                              (pin, urltoken) )
     return 0
 
+def do_check(initiative_name):
 
+    base.Disku(initiative_name, create=False)
+    # TODO print some stuff - stats - etc
 
 def help(swname):
 
@@ -70,7 +80,14 @@ def help(swname):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) != 3 and (sys.argv[2] == 'complete' and len(sys.argv) == 5):
+    if len(sys.argv) < 2 or sys.argv[1] == '-h' or sys.argv[1] == '--help' or sys.argv[1] == 'help':
+        quit(help(sys.argv[0]))
+
+    if len(sys.argv) < 3:
+        print "you've selected command: %s without specify the initiative name" % sys.argv[2]
+        quit(help(sys.argv[0]))
+
+    if len(sys.argv) != 3 or (sys.argv[2] == 'complete' and len(sys.argv) == 5):
         quit(help(sys.argv[0]))
 
     if sys.argv[1] == 'init':

@@ -56,7 +56,7 @@ class Disku:
         print "Registered info in", self.ownerfname
 
 
-    def __init__(self, initiative_name):
+    def __init__(self, initiative_name, create=False):
 
         self.loaded_initiative = initiative_name
         self.setup_environment_files()
@@ -64,8 +64,12 @@ class Disku:
         self.ownerfname = os.path.join(self.init_dir, 'owner_static')
 
         if not os.path.isfile(self.ownerfname):
-            print "Creating initiative", initiative_name
-            self.interactive_creation()
+
+            if create:
+                print "Creating initiative", initiative_name
+                self.interactive_creation()
+            else:
+                raise Exception("Initiative %s do not exists" % initiative_name)
 
         self.log_file = os.path.join(self.init_dir, 'activities.log')
 

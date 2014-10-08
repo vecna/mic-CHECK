@@ -1,9 +1,8 @@
 #!/usr/bin/python
-#
 
-import os, time, sys
+
+import time, sys
 import base, pickle
-
 
 
 class Retweeterd:

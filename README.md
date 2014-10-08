@@ -72,3 +72,7 @@ every time is called 'adminutils generate app_name' it return two lines:
 Calling the adminutils with the PIN receiver by the user (5150781) and the associated random ID, cause the app to successful complete the registration (and print out the username)
 
 
+# floatserver.py
+
+
+
