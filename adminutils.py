@@ -28,8 +28,6 @@ def do_generate(iname):
 
 def inner_do_generate(iname):
 
-    return "dummy_url", "dummy_random"
-
     twiface = base.twitt(iname)
 
     random_name= str(random.randint(1, 9999))
@@ -50,11 +48,12 @@ def inner_do_generate(iname):
 
 def do_complete(iname, pin, urltoken):
 
-    pincode = int(pin)
+    pincode = unicode(int(pin))
+    random_token = unicode(int(urltoken))
 
     twiface = base.twitt(iname)
 
-    tokens = twiface.diskconf.pop_temporary(urltoken)
+    tokens = twiface.diskconf.pop_temporary(random_token)
     username = twiface.complete_registration(pincode, tokens)
     # it print the username at the end
 
@@ -63,7 +62,7 @@ def do_complete(iname, pin, urltoken):
     else:
         twiface.diskconf.log("do_complete fail with %s and %s" %
                              (pin, urltoken) )
-    return 0
+    return username
 
 def do_check(initiative_name):
 

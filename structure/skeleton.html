@@ -24,37 +24,43 @@
     <script type="application/javascript" src="bower_components/jquery/dist/jquery.js"></script>
 
     <script type="application/javascript">
-    function request_aa() {
-        $.getJSON( "gimmeuniqueurl", function( data ) {
-            var items = [];
-            $.each( data, function( key, val ) {
-                items.push( "<li id='" + key + "'>" + val + "</li>" );
-            });
-            $( "<ul/>", {
-                "class": "my-new-list",
-                html: items.join( "" )
-                }).appendTo( "body" );
-            });
+
+        function request_aa()
+        {
+            $.getJSON( "gimmeuniqueurl", function( data ) {
+
+                $.each( data, function( key, val ) {
+                    console.log(key);
+                    console.log(val);
+                    if (key == 'url') {
+                        window.open(val, 'twitwin','resizeable=yes,location=no');
+                    }
+                    if (key == 'random_number') {
+                        window.random_number = val;
+                    }
+                });
+            })
         }
-    function complete() {
-        var pin = document.getElementById("pin").value;
-        console.log(pin);
 
-        $.getJSON( "complete?" + pin + "&ciao=aaa", function( data ) {
-            var items = [];
-            $.each( data, function( key, val ) {
-                items.push( "<li id='" + key + "'>" + val + "</li>" );
-            });
-            $( "<ul/>", {
-                "class": "my-new-list",
-                html: items.join( "" )
-            }).appendTo( "body" );
-        });
+        function complete()
+        {
+            var pin = document.getElementById("pin").value;
+            console.log(pin);
 
+            $.getJSON( "complete/" + pin + "/" + window.random_number + "/", function( data ) {
+                var items = [];
+                $.each( data, function( key, val ) {
+                    if (key == 'username') {
+                        result_span = document.getElementById("respn");
+                        result_span.innerHTML = val;
+                        coup = document.getElementsByClassName("butt");
+                        coup[0].addClass("hidden");
+                        coup[1].addClass("hidden");
+                    }
+                });
+            })
+        }
 
-
-
-    }
     </script>
 
   </head>
@@ -102,7 +108,7 @@
       <div class="row">
         <div class="col-md-4">
           <h2>1</h2>
-          <p>%STEP1%</p>
+          <p id="ID1">%STEP1%</p>
           <p><a class="btn btn-default" href="#" onclick=request_aa() role="button">Go for it!</a></p>
         </div>
         <div class="col-md-4">
@@ -110,17 +116,15 @@
           <p>%STEP2%</p>
        </div>
         <div class="col-md-4">
-          <h2>3</h2>
-          <p>%STEP3%</p>
+          <h2 id="respn">3</h2>
+          <p class="butt">%STEP3%</p>
           <input id="pin" type="text" class="input-sm" value=""></input>
-          <p>
+          <p class="butt">
               <a class="btn btn-lg" href="#" onclick=complete() role="button">Complete registration</a>
           </p>
         </div>
       </div>
       <hr>
-
-      <iframe id="a" width="100%"></iframe>
 
       <footer>
         <p>&copy; Love</p>

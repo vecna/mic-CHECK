@@ -89,19 +89,24 @@ class Disku:
         with file(self.tmptokenf, 'w+') as f:
             json.dump(tmptokenlist, f)
 
-    def pop_temporary(self, id):
+    def pop_temporary(self, random_id):
 
         self.tmptokenf = os.path.join(self.init_dir, 'tmptoken.json')
         tmptokenlist = {}
         if os.path.isfile(self.tmptokenf):
             with file(self.tmptokenf) as f:
                 tmptokenlist = json.load(f)
+                print "Loaded from", self.tmptokenf, "#", len(tmptokenlist.keys())
+                print tmptokenlist
 
-        retval_url = tmptokenlist[id]
-        del tmptokenlist[id]
+        print tmptokenlist.has_key(random_id)
+        retval_url = tmptokenlist[random_id]
+        del tmptokenlist[random_id]
 
+        # update now that has been deleted
         with file(self.tmptokenf, 'w+') as f:
             json.dump(tmptokenlist, f)
+            print "Dump to", self.tmptokenf, "#", len(tmptokenlist.keys())
 
         return retval_url
 

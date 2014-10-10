@@ -45,6 +45,7 @@ class URLGen(tornado.web.RequestHandler):
 
         url, random_name = inner_do_generate(sys.argv[1])
         self._headers['Content-type'] = 'application/json'
+        print "Requested URL gen: (%s) url %s" % (random_name, url)
         self.write({
             'url' : url,
             'random_name' : random_name
@@ -53,11 +54,13 @@ class URLGen(tornado.web.RequestHandler):
 
 class Complete(tornado.web.RequestHandler):
 
-    def get(self, *ua, **ka):
-        print ua
-        print ka
+    def get(self, u_pin, u_random_number):
 
-        do_complete(sys.argv[1], 1234, "bbb")
+        pin = unicode(int(u_pin))
+        random_number = unicode(int(u_random_number))
+        username = do_complete(sys.argv[1], pin, random_number)
+
+        self.write({'username': username})
         self.finish()
 
 class CSSJS(tornado.web.RequestHandler):
@@ -80,7 +83,6 @@ class CSSJS(tornado.web.RequestHandler):
                 pass
 
             c = file(x, 'r').read()
-            print x, len(c)
             self.write(c)
 
         self.finish()
@@ -98,7 +100,7 @@ if __name__ == '__main__':
     apiMap = [
         (r"/", AcceptSupporter),
         (r"/gimmeuniqueurl", URLGen),
-        (r"/complete", Complete),
+        (r"/complete/(.*)/(.*)/", Complete),
         (r"/bower_components/bootstrap/dist/css/bootstrap.min.css", CSSJS),
         (r"/bower_components/bootstrap/dist/js/bootstrap.min.js", CSSJS),
         (r"/bower_components/jquery/dist/jquery.js", CSSJS),
