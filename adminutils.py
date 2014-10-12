@@ -26,11 +26,15 @@ def do_generate(iname):
     print "random associated ID:", random_name
     return 0
 
-def inner_do_generate(iname):
+def inner_do_generate(iname, supply_random=False):
 
     twiface = base.twitt(iname)
 
-    random_name= str(random.randint(1, 9999))
+    if not supply_random:
+        random_name= str(random.randint(1, 9999))
+    else:
+        random_name= str(supply_random)
+
     twiface.diskconf.log("Generating token for %s..." % random_name)
 
     url, oauth_token, oauth_secret = twiface.get_url_registration()

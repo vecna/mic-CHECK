@@ -39,7 +39,7 @@ class AcceptSupporter(tornado.web.RequestHandler):
         self.write(AcceptSupporter.PAGE)
         self.finish()
 
-class URLGen(tornado.web.RequestHandler):
+class URLRandGen(tornado.web.RequestHandler):
 
     def get(self, *ua, **ka):
 
@@ -50,6 +50,18 @@ class URLGen(tornado.web.RequestHandler):
             'url' : url,
             'random_name' : random_name
         })
+        self.finish()
+
+class URLGen(tornado.web.RequestHandler):
+
+    def get(self, random_supply):
+
+        url, random_name = inner_do_generate(sys.argv[1], random_supply)
+        assert random_name == random_supply
+
+        self._headers['Content-type'] = 'application/json'
+        print "Random supply - Requested URL gen: (%s) url %s" % (random_name, url)
+        self.write(url)
         self.finish()
 
 class Complete(tornado.web.RequestHandler):
@@ -100,7 +112,8 @@ if __name__ == '__main__':
     apiMap = [
         (r"/", AcceptSupporter),
         (r"/gimmeuniqueurl", URLGen),
-        (r"/complete/(.*)/(.*)/", Complete),
+        (r"/gimmeurlandrname", URLRandGen),
+        (r"/complete/(.*)/", Complete),
         (r"/bower_components/bootstrap/dist/css/bootstrap.min.css", CSSJS),
         (r"/bower_components/bootstrap/dist/js/bootstrap.min.js", CSSJS),
         (r"/bower_components/jquery/dist/jquery.js", CSSJS),
