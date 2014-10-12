@@ -54,7 +54,9 @@ class URLRandGen(tornado.web.RequestHandler):
 
 class URLGen(tornado.web.RequestHandler):
 
-    def get(self, random_supply):
+    def get(self, *au, **ka):
+
+        random_supply = self.get_query_argument('q')
 
         url, random_name = inner_do_generate(sys.argv[1], random_supply)
         assert random_name == random_supply
