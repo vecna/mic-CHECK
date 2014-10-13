@@ -27,16 +27,21 @@
 
         function request_aa()
         {
-            $.getJSON( "gimmeuniqueurl", function( data ) {
+            document.getElementById("goforit").innerHTML = "Wait few seconds...";
+
+            $.getJSON( "gimmeurlandrname", function( data ) {
 
                 $.each( data, function( key, val ) {
                     console.log(key);
                     console.log(val);
                     if (key == 'url') {
-                        window.open(val, 'twitwin','resizeable=yes,location=no');
+                        link = document.getElementById("link");
+                        link.href = val;
+                        link.innerHTML = "Open in a new tab:" + val;
+                        link.target = "_blank";
                     }
                     if (key == 'random_number') {
-                        window.random_number = val;
+                        document.getElementById("hidn").value = val;
                     }
                 });
             })
@@ -45,19 +50,11 @@
         function complete()
         {
             var pin = document.getElementById("pin").value;
-            console.log(pin);
-
-            $.getJSON( "complete/" + pin + "/" + window.random_number + "/", function( data ) {
-                var items = [];
-                $.each( data, function( key, val ) {
-                    if (key == 'username') {
-                        result_span = document.getElementById("respn");
-                        result_span.innerHTML = val;
-                        coup = document.getElementsByClassName("butt");
-                        coup[0].addClass("hidden");
-                        coup[1].addClass("hidden");
-                    }
-                });
+            var random_number = document.getElementById("hidn").value;
+            console.log("Pin:" + pin);
+            $.get( "complete?q=" + random_number + "&pin=" + pin, function( data ) {
+                // the username registered
+                console.log(data);
             })
         }
 
@@ -79,17 +76,6 @@
           <a class="navbar-brand" href="#">%NAME%</a>
         </div>
         <div class="navbar-collapse collapse">
-          <!--
-          <form class="navbar-form navbar-right" role="form">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-          -->
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -109,7 +95,7 @@
         <div class="col-md-4">
           <h2>1</h2>
           <p id="ID1">%STEP1%</p>
-          <p><a class="btn btn-default" href="#" onclick=request_aa() role="button">Go for it!</a></p>
+          <p><a class="btn btn-default" href="#" onclick=request_aa() id="goforit" role="button">Go for it!</a></p>
         </div>
         <div class="col-md-4">
           <h2>2</h2>
@@ -118,7 +104,8 @@
         <div class="col-md-4">
           <h2 id="respn">3</h2>
           <p class="butt">%STEP3%</p>
-          <input id="pin" type="text" class="input-sm" value=""></input>
+          <input id="pin" type="text" class="input-sm" value="" />
+          <input type="hidden" id="hidn" value="" />
           <p class="butt">
               <a class="btn btn-lg" href="#" onclick=complete() role="button">Complete registration</a>
           </p>
@@ -126,8 +113,12 @@
       </div>
       <hr>
 
+      <h1>
+          <a id="link"></a>
+      </h1>
+
       <footer>
-        <p>&copy; Love</p>
+        <p>For the greater good &trade;</p>
       </footer>
     </div> <!-- /container -->
 
