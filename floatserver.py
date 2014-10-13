@@ -73,6 +73,7 @@ class Complete(tornado.web.RequestHandler):
         pin = unicode(int(pin))
         random_number = unicode(int(random_number))
 
+        print "received a complete request, pin %s (random number) %s" % (pin, random_number)
         username = do_complete(sys.argv[1], pin, random_number)
         print "Completed successfull user %s = %s" (random_number, username)
 
