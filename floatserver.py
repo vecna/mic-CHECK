@@ -8,9 +8,6 @@ import tornado.ioloop
 import tornado.web
 from adminutils import inner_do_generate, do_check, do_complete
 
-from tornado.util import bytes_type, unicode_type
-from tornado import escape
-
 
 LISTENER_PORT = 8888
 CUSTOMFILES_DIR = 'structure'
@@ -61,18 +58,23 @@ class URLGen(tornado.web.RequestHandler):
         url, random_name = inner_do_generate(sys.argv[1], random_supply)
         assert random_name == random_supply
 
-        self._headers['Content-type'] = 'application/json'
-        print "Random supply - Requested URL gen: (%s) url %s" % (random_name, url)
+        print "Random supply %s url %s" % (random_name, url)
         self.write(url)
         self.finish()
 
+
 class Complete(tornado.web.RequestHandler):
 
-    def get(self, u_pin, u_random_number):
+    def get(self, *au, **ka):
 
-        pin = unicode(int(u_pin))
-        random_number = unicode(int(u_random_number))
+        pin = self.get_query_argument('pin')
+        random_number = self.get_query_argument('q')
+
+        pin = unicode(int(pin))
+        random_number = unicode(int(random_number))
+
         username = do_complete(sys.argv[1], pin, random_number)
+        print "Completed successfull user %s = %s" (random_number, username)
 
         self.write({'username': username})
         self.finish()
@@ -115,7 +117,7 @@ if __name__ == '__main__':
         (r"/", AcceptSupporter),
         (r"/gimmeuniqueurl", URLGen),
         (r"/gimmeurlandrname", URLRandGen),
-        (r"/complete/(.*)/", Complete),
+        (r"/complete", Complete),
         (r"/bower_components/bootstrap/dist/css/bootstrap.min.css", CSSJS),
         (r"/bower_components/bootstrap/dist/js/bootstrap.min.js", CSSJS),
         (r"/bower_components/jquery/dist/jquery.js", CSSJS),
