@@ -28,20 +28,19 @@
         function request_aa()
         {
             document.getElementById("goforit").innerHTML = "Wait few seconds...";
+            document.getElementById("goforit").onClick = undefined;
 
             $.getJSON( "gimmeurlandrname", function( data ) {
 
                 $.each( data, function( key, val ) {
-                    console.log(key);
-                    console.log(val);
                     if (key == 'url') {
                         link = document.getElementById("link");
                         link.href = val;
                         link.innerHTML = "Open in a new tab:" + val;
                         link.target = "_blank";
                     }
-                    if (key == 'random_number') {
-                        document.getElementById("hidn").value = val;
+                    if (key == 'random_name') {
+                      document.getElementById('hidn').value = val;
                     }
                 });
             })
@@ -50,8 +49,8 @@
         function complete()
         {
             var pin = document.getElementById("pin").value;
-            var random_number = document.getElementById("hidn").value;
-            console.log("Pin:" + pin);
+            var random_number = document.getElementById('hidn').value;
+            console.log("Random Number: " + random_number + " Pin: "+ pin);
             $.get( "complete?q=" + random_number + "&pin=" + pin, function( data ) {
                 // the username registered
                 console.log(data);
@@ -95,7 +94,7 @@
         <div class="col-md-4">
           <h2>1</h2>
           <p id="ID1">%STEP1%</p>
-          <p><a class="btn btn-default" href="#" onclick=request_aa() id="goforit" role="button">Go for it!</a></p>
+          <p><a class="btn btn-default" onclick=request_aa() id="goforit" role="button">Go for it!</a></p>
         </div>
         <div class="col-md-4">
           <h2>2</h2>
@@ -104,10 +103,10 @@
         <div class="col-md-4">
           <h2 id="respn">3</h2>
           <p class="butt">%STEP3%</p>
-          <input id="pin" type="text" class="input-sm" value="" />
           <input type="hidden" id="hidn" value="" />
+          <input id="pin" type="text" class="input-sm" value="" />
           <p class="butt">
-              <a class="btn btn-lg" href="#" onclick=complete() role="button">Complete registration</a>
+              <a class="btn btn-lg" onclick=complete() role="button">Complete registration</a>
           </p>
         </div>
       </div>
@@ -121,7 +120,6 @@
         <p>For the greater good &trade;</p>
       </footer>
     </div> <!-- /container -->
-
 
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   </body>
