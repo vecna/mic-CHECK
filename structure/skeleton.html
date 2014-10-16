@@ -43,7 +43,8 @@
                       document.getElementById('hidn').value = val;
                     }
                 });
-            })
+            });
+            $('#ID1').hide(1000);
         }
 
         function complete()
@@ -51,7 +52,7 @@
             var pin = document.getElementById("pin").value;
             var random_number = document.getElementById('hidn').value;
             console.log("Random Number: " + random_number + " Pin: "+ pin);
-            $.get( "complete?q=" + random_number + "&pin=" + pin, function( data ) {
+            $.getJSON( "complete?q=" + random_number + "&pin=" + pin, function( data ) {
                 // the username registered
                 console.log(data);
             })
